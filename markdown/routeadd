@@ -1,0 +1,21 @@
+#!/bin/bash
+#Edit /etc/iproute2/rt_table, add 100 chinanet and 200 unicom first.
+
+CHINANET_IF="em1"
+CHINANET_NET="222.180.162.128/28"
+CHINANET_IP="222.180.162.132"
+CHINANET_ROUTE="222.180.162.129"
+
+UNICOM_IF="em2"
+UNICOM_NET="113.207.32.80/28"
+UNICOM_IP="113.207.32.84"
+UNICOM_ROUTE="113.207.32.81"
+
+ip route add $CHINANET_NET dev $CHINANET_IF src $CHINANET_IP table chinanet
+ip route add default via $CHINANET_ROUTE table chinanet
+ip route add $UNICOM_NET dev $UNICOM_IF src $UNICOM_IP table unicom
+ip route add default via $UNICOM_ROUTE table unicom
+
+ip rule add from $CHINANET_IP table chinanet
+ip rule add from $UNICOM_IP table unicom
+
